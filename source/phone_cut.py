@@ -9,7 +9,7 @@ from collections import namedtuple
 from cadquery import exporters
 from cadquery import importers
 
-def phone_cut()
+def phone_cut():
 
     ## --------------------------- variables
     height = 60.0

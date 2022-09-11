@@ -8,20 +8,15 @@ import math as math
 from collections import namedtuple
 from cadquery import exporters
 from cadquery import importers
+import os, sys
+# helper to get correct path on NixOs
+path = os.path.dirname(os.path.abspath(sys.argv[1]));
+print(path);
+sys.path.append(path)
 
+
+from phone_cut import phone_cut
 DEBUG_MODE = True;
-
-def phone_cut():
-
-    ## --------------------------- variables
-    height = 60.0
-    width = 80.0
-    thickness = 10.0
-
-    # The intention here is to create the 'blank' that will be removed from the insert.
-
-    result = cq.Workplane("XY").box(height, width, thickness)
-    return result;
 
 result = phone_cut();
 
