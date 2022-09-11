@@ -1,26 +1,21 @@
-# Mike-Bike battery-box casing, by the Astral_3D Team aboard the Astral Ship, 2021-05-15
-# Expecting CQ-Editor 0.2.0 or heigher, Cadquery 2.0.0
-# This is version 3.0 of the battery-box design, a third prototype based heavily
-# on the amazing work of our team!
+import os, sys
+import math as math
+
+# helper to allow imports outside of cq-editor
+sys.path.append(os.getcwd());
 
 import cadquery as cq
-import math as math
-from collections import namedtuple
 from cadquery import exporters
 from cadquery import importers
-import os, sys
-# helper to get correct path on NixOs
-path = os.path.dirname(os.path.abspath(sys.argv[1]));
-print(path);
-sys.path.append(path)
-
 
 from phone_cut import phone_cut
-DEBUG_MODE = True;
 
-result = phone_cut();
+Holder_Dimension = cq.Vector(160,80,13)
 
+Holder = cq.Workplane("XY").box(Holder_Dimension.x, Holder_Dimension.y, Holder_Dimension.z).cut(phone_cut())
+#debug(phone_cut(), name='cut edge');
+result1 = Holder.faces(">Y").workplane((-Holder_Dimension.x)/4).split(keepTop=True)
+result2 = Holder.faces(">Y").workplane((-Holder_Dimension.x)/4).split(keepBottom=True)
 
-#debug(Cut_Edge, name='cut edge');
-
-show_object(result, name='Printed_Tip', options=dict(color='#3333CC'));
+show_object(result1, name='Holder Part A', options=dict(color='#3333CC'))
+show_object(result2, name='Holder Part B', options=dict(color='#3333CC'))

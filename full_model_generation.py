@@ -5,13 +5,15 @@
 # Load CQGI
 import cadquery.cqgi as cqgi
 import cadquery as cq
+import os, sys
+os.chdir('./source/')
 
-model = cqgi.parse(open("source/casing.py").read());
+model = cqgi.parse(open("casing.py").read());
 build_result = model.build();
 if build_result.success:
     count = 0;
     for result in build_result.results:
-        with open('output/casing'+ str(count) + '.stl', 'w') as f:
+        with open('../output/casing'+ str(count) + '.stl', 'w') as f:
             f.write(cq.exporters.toString(result.shape, 'STL', 10))
         f.close();
         count = count + 1;

@@ -12,13 +12,13 @@ from cadquery import importers
 def phone_cut():
 
     ## --------------------------- variables
-    height = 60.0
-    width = 80.0
-    thickness = 10.0
+    height = 157
+    width = 78.0
+    thickness = 11.5
 
     # The intention here is to create the 'blank' that will be removed from the insert.
 
-    result = cq.Workplane("XY").box(height, width, thickness)
+    result = cq.Workplane("XY").box(height, width, thickness).edges("|Z").fillet(10).edges("|X").fillet(2).translate([0,0,1])
     return result;
 
 #debug(Cut_Edge, name='cut edge');
