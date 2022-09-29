@@ -2,7 +2,8 @@
 # Expecting CQ-Editor 0.2.0 or heigher, Cadquery 2.0.0
 # This is version 3.0 of the battery-box design, a third prototype based heavily
 # on the amazing work of our team!
-
+import os, sys
+import math as math
 import cadquery as cq
 import math as math
 from collections import namedtuple
@@ -12,15 +13,32 @@ from cadquery import importers
 def phone_cut():
 
     ## --------------------------- variables
-    height = 157
+    height = 160
     width = 78.0
     thickness = 11.5
+    ## outer-fillet
+    outerFillet=10
+    topFillet=2
+    baseDistance=3
+
 
     # The intention here is to create the 'blank' that will be removed from the insert.
 
-    result = cq.Workplane("XY").box(height, width, thickness).edges("|Z").fillet(10).edges("|X").fillet(2).translate([0,0,1])
+    phoneEdge = (cq.Sketch()
+        .rect(height, width)
+        .vertices()
+        .fillet(outerFillet))
+    s2 = (cq.Sketch()
+         .rect(height, width/3)
+         .vertices()
+         .fillet(1))
+    result = cq.Workplane("XY").placeSketch(phoneEdge).extrude(thickness);
+    BaseTaper = (cq.Workplane()
+        .placeSketch(phoneEdge, s2.moved(cq.Location(cq.Vector(0, 0, -baseDistance))))
+        .loft())
+    result += BaseTaper
+    result = result.edges(">Z").fillet(topFillet)
+    result = result.faces("<X").workplane().moveTo(0,thickness/3).box(18,10,100)
     return result;
 
-#debug(Cut_Edge, name='cut edge');
-
-#show_object(result, name='phone_cut', options=dict(color='#3333CC'));
+#show_object(phone_cut(), name='phone_cut', options=dict(color='#3333CC'));
