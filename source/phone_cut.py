@@ -12,10 +12,11 @@ from cadquery import importers
 
 def phone_cut():
 
+    tolerance = 0.2;
     ## --------------------------- variables
-    height = 160
-    width = 78.0
-    thickness = 11.5
+    height = 159 + tolerance;
+    width = 77.0 + tolerance;
+    thickness = 10 + tolerance;
     ## outer-fillet
     outerFillet=10
     topFillet=2
@@ -38,7 +39,7 @@ def phone_cut():
         .loft())
     result += BaseTaper
     result = result.edges(">Z").fillet(topFillet)
-    result = result.faces("<X").workplane().moveTo(0,thickness/3).box(18,10,100)
+    result = result.faces("<X").workplane().moveTo(0,thickness/4).box(18,10,100)
     return result;
 
 #show_object(phone_cut(), name='phone_cut', options=dict(color='#3333CC'));
