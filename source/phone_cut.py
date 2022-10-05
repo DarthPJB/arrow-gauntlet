@@ -21,7 +21,15 @@ def phone_cut():
     outerFillet=10
     topFillet=2
     baseDistance=3
+    USB_CUT=cq.Vector(10,10,30);
+    USB_cut_offset = 1 + tolerance;
+    USB_cut_fillet = 3 + tolerance;
 
+    buttonLength = 50;
+    buttonHeight = 5;
+    buttonOffset = 4;
+    buttonXOffset = -6.5;
+    buttonYOffset = 40
 
     # The intention here is to create the 'blank' that will be removed from the insert.
 
@@ -33,13 +41,25 @@ def phone_cut():
          .rect(height, width/3)
          .vertices()
          .fillet(1))
-    result = cq.Workplane("XY").placeSketch(phoneEdge).extrude(thickness);
-    BaseTaper = (cq.Workplane()
-        .placeSketch(phoneEdge, s2.moved(cq.Location(cq.Vector(0, 0, -baseDistance))))
-        .loft())
+
+    # Create phone body
+    result = cq.Workplane("XY").placeSketch(phoneEdge).extrude(-thickness).edges(">Z").fillet(topFillet);
+
+    # Add side button space
+    result = result.faces("<Y").workplane().moveTo(buttonYOffset,buttonXOffset).box(buttonLength, buttonHeight, buttonOffset,[True, True, False])\
+    .edges("<Y").fillet(buttonHeight/3)
+
+
+
+    # Create rectangle and phone edge loft.
+    BaseTaper = cq.Workplane().workplane(-thickness)\
+        .placeSketch(phoneEdge, s2.moved(cq.Location(cq.Vector(0, 0, -baseDistance))))\
+        .loft();
     result += BaseTaper
-    result = result.edges(">Z").fillet(topFillet)
-    result = result.faces("<X").workplane().moveTo(0,thickness/4).box(18,10,100)
+
+    # Add expansion hole for USB port
+    result = result + cq.Workplane("ZY").workplane(offset=height/2)\
+    .moveTo(-(USB_CUT.x + USB_cut_offset),0).box(USB_CUT.x, USB_CUT.y, USB_CUT.z,[False,True,True]).edges("|X").fillet(USB_cut_fillet);
     return result;
 
 #show_object(phone_cut(), name='phone_cut', options=dict(color='#3333CC'));
