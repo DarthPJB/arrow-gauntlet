@@ -13,9 +13,7 @@ build_result = model.build();
 if build_result.success:
     count = 0;
     for result in build_result.results:
-        with open('../output/casing'+ str(count) + '.stl', 'w') as f:
-            f.write(cq.exporters.toString(result.shape, 'STL', 10))
-        f.close();
+        cq.exporters.export(result.shape, '../output/casing_{i}.stl')
         count = count + 1;
 else:
     print( "BUILD FAILED: " + str(build_result.exception) + "\n");

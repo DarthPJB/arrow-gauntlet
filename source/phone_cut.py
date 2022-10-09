@@ -1,7 +1,9 @@
-# Mike-Bike battery-box casing, by the Astral_3D Team aboard the Astral Ship, 2021-05-15
-# Expecting CQ-Editor 0.2.0 or heigher, Cadquery 2.0.0
-# This is version 3.0 of the battery-box design, a third prototype based heavily
-# on the amazing work of our team!
+# Phone negative cutaway geometry
+
+# This file contains two functions which should contain all variables for the creation of the phone.
+# phone_cut will return the geometry of the phone negative
+# phone_size will return a vector containing the size of the phone-body (as a bounding box)
+
 import os, sys
 import math as math
 import cadquery as cq
@@ -10,13 +12,16 @@ from collections import namedtuple
 from cadquery import exporters
 from cadquery import importers
 
+# ----- Global variables
+tolerance = 0.2;
+
+def phone_size():
+    return cq.Vector(78.5 + tolerance, 159 + tolerance, 10 + tolerance);
+
 def phone_cut():
 
-    tolerance = 0.2;
     ## --------------------------- variables
-    height = 159 + tolerance;
-    width = 77.0 + tolerance;
-    thickness = 10 + tolerance;
+    phonesize = phone_size();
     ## outer-fillet
     outerFillet=10
     topFillet=2
@@ -34,16 +39,16 @@ def phone_cut():
     # The intention here is to create the 'blank' that will be removed from the insert.
 
     phoneEdge = (cq.Sketch()
-        .rect(height, width)
+        .rect(phonesize.y, phonesize.x)
         .vertices()
         .fillet(outerFillet))
     s2 = (cq.Sketch()
-         .rect(height, width/3)
+         .rect(phonesize.y, phonesize.x/3)
          .vertices()
          .fillet(1))
 
     # Create phone body
-    result = cq.Workplane("XY").placeSketch(phoneEdge).extrude(-thickness).edges(">Z").fillet(topFillet);
+    result = cq.Workplane("XY").placeSketch(phoneEdge).extrude(-phonesize.z).edges(">Z").fillet(topFillet);
 
     # Add side button space
     result = result.faces("<Y").workplane().moveTo(buttonYOffset,buttonXOffset).box(buttonLength, buttonHeight, buttonOffset,[True, True, False])\
@@ -52,13 +57,13 @@ def phone_cut():
 
 
     # Create rectangle and phone edge loft.
-    BaseTaper = cq.Workplane().workplane(-thickness)\
+    BaseTaper = cq.Workplane().workplane(-phonesize.z)\
         .placeSketch(phoneEdge, s2.moved(cq.Location(cq.Vector(0, 0, -baseDistance))))\
         .loft();
     result += BaseTaper
 
     # Add expansion hole for USB port
-    result = result + cq.Workplane("ZY").workplane(offset=height/2)\
+    result = result + cq.Workplane("ZY").workplane(offset=phonesize.y/2)\
     .moveTo(-(USB_CUT.x + USB_cut_offset),0).box(USB_CUT.x, USB_CUT.y, USB_CUT.z,[False,True,True]).edges("|X").fillet(USB_cut_fillet);
     return result;
 

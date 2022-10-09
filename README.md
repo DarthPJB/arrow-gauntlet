@@ -8,7 +8,11 @@ Why put it in your pocket, when you can wear it on your arm like a radical futur
 This project will provide the parametric design needed to allow you to make a such a bizzare fashion statement.
 
 ## Stages
-- [ ] Phone-insert
+- [x] Phone-insert
+  - [x] Existing phone negative
+  - [x] Casing-cutaway
+  - [x] Edge shaping
+  - [ ] Interlock mechanism
 - [ ] Arm-brace
 - [ ] Internal wiring-clips
 - [ ] Battery-insert
