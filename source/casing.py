@@ -36,9 +36,11 @@ Cradle = Cradle.edges("|X and >Y and >Z").chamfer(10)
 Cradle = Cradle.edges("|X and <Y and >Z").chamfer(10)
 # ----- remove the phone geometry from the cradle
 Cradle = Cradle.cut(phone)
-# ----- split the cradle into two *snap together* parts.
-SnapCut = snap_fit_cut(Cradle.faces("<Z").edges("|Y"));
 
+
+# ----- split the cradle into two *snap together* parts.
+Selector = Cradle.faces("<Z").edges("|Y");
+SnapCut = snap_fit_cut(Selector);
 debug(SnapCut);
 result1 = Cradle.faces(">Y").workplane((-holder_dimensions.y)/2).split(keepTop=True)
 result2 = Cradle.faces(">Y").workplane((-holder_dimensions.y)/2).split(keepBottom=True)

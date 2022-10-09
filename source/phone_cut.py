@@ -9,8 +9,8 @@ import math as math
 import cadquery as cq
 import math as math
 from collections import namedtuple
-from cadquery import exporters
-from cadquery import importers
+from cadquery import cqgi
+
 
 # ----- Global variables
 tolerance = 0.2;
@@ -65,6 +65,9 @@ def phone_cut():
     # Add expansion hole for USB port
     result = result + cq.Workplane("ZY").workplane(offset=phonesize.y/2)\
     .moveTo(-(USB_CUT.x + USB_cut_offset),0).box(USB_CUT.x, USB_CUT.y, USB_CUT.z,[False,True,True]).edges("|X").fillet(USB_cut_fillet);
+
+    #Deep call to debug for local editing
+    cqgi.ScriptCallback().debug(obj=result);
     return result;
 
-#show_object(phone_cut(), name='phone_cut', options=dict(color='#3333CC'));
+cqgi.ScriptCallback().show_object(phone_cut(), name='phone_cut', options=dict(color='#3333CC'));
